@@ -1,9 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Poleramma Expenses</title>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sri Poleramma Jathara</title>
 
 <style>
 
@@ -13,6 +17,8 @@ body{
     margin:0;
     padding:0;
 }
+
+/* MAIN BOX */
 
 .login-box,.app{
     width:90%;
@@ -24,10 +30,29 @@ body{
     box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
-h1{
+/* LOGO */
+
+.logo-box{
     text-align:center;
-    color:#b30000;
+    margin-bottom:20px;
 }
+
+.logo-box img{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    border:5px solid #b30000;
+    object-fit:cover;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+.logo-box h1{
+    margin-top:15px;
+    color:#b30000;
+    font-size:38px;
+}
+
+/* INPUTS */
 
 input{
     width:100%;
@@ -38,6 +63,8 @@ input{
     font-size:16px;
     box-sizing:border-box;
 }
+
+/* BUTTONS */
 
 button{
     width:100%;
@@ -54,6 +81,8 @@ button{
 button:hover{
     background:#800000;
 }
+
+/* TABLE */
 
 table{
     width:100%;
@@ -72,6 +101,8 @@ table th{
     color:white;
 }
 
+/* TOTAL */
+
 .total{
     margin-top:20px;
     font-size:24px;
@@ -80,9 +111,13 @@ table th{
     font-weight:bold;
 }
 
+/* HIDDEN */
+
 .hidden{
     display:none;
 }
+
+/* BACK BUTTON */
 
 .back-btn{
     background:#444;
@@ -93,6 +128,7 @@ table th{
 }
 
 </style>
+
 </head>
 
 <body>
@@ -101,13 +137,25 @@ table th{
 
 <div class="login-box" id="loginPage">
 
-<h1>Expense Adder Login</h1>
+<div class="logo-box">
 
-<input type="text" id="username" placeholder="Enter Username">
+<img src="poleramma.png" alt="Sri Poleramma">
 
-<input type="password" id="password" placeholder="Enter Password">
+<h1>Sri Poleramma Jathara</h1>
 
-<button onclick="login()">Login</button>
+</div>
+
+<input type="text"
+id="username"
+placeholder="Enter Username">
+
+<input type="password"
+id="password"
+placeholder="Enter Password">
+
+<button onclick="login()">
+Login
+</button>
 
 </div>
 
@@ -115,27 +163,42 @@ table th{
 
 <div class="app">
 
-<h1>Veguru Village Expenses</h1>
+<div class="logo-box">
 
-<!-- ONLY EXPENSE ADDER NEEDS LOGIN -->
+<img src="poleramma.png" alt="Sri Poleramma">
+
+<h1>Sri Poleramma Jathara</h1>
+
+</div>
+
+<!-- ADD EXPENSE AREA -->
 
 <div id="expenseAdder" class="hidden">
 
-<input type="text" id="personName" placeholder="Person Name">
+<input type="text"
+id="personName"
+placeholder="Person Name">
 
-<input type="number" id="amount" placeholder="Amount">
+<input type="number"
+id="amount"
+placeholder="Amount">
 
-<input type="text" id="purpose" placeholder="Purpose">
+<input type="text"
+id="purpose"
+placeholder="Purpose">
 
-<button onclick="addExpense()">Add Expense</button>
+<button onclick="addExpense()">
+Add Expense
+</button>
 
-<button class="back-btn" onclick="logout()">
+<button class="back-btn"
+onclick="logout()">
 Back / Logout
 </button>
 
 </div>
 
-<!-- EVERYONE CAN VIEW -->
+<!-- EXPENSE TABLE -->
 
 <table>
 
@@ -151,29 +214,40 @@ Back / Logout
 </thead>
 
 <tbody id="expenseTable">
+
 </tbody>
 
 </table>
 
-<div class="total" id="totalAmount">
+<!-- GRAND TOTAL -->
+
+<div class="total"
+id="totalAmount">
+
 Grand Total: ₹0
+
 </div>
 
 </div>
 
 <script>
 
+// TOTAL VARIABLE
+
 let total = 0;
+
 
 // LOGIN FUNCTION
 
 function login(){
 
     let username =
-    document.getElementById("username").value.trim();
+    document.getElementById("username")
+    .value.trim();
 
     let password =
-    document.getElementById("password").value.trim();
+    document.getElementById("password")
+    .value.trim();
 
     if(username === "Surya" &&
        password === "12345678"){
@@ -214,13 +288,17 @@ function logout(){
 function addExpense(){
 
     let name =
-    document.getElementById("personName").value;
+    document.getElementById("personName")
+    .value;
 
     let amount =
-    parseInt(document.getElementById("amount").value);
+    parseInt(
+    document.getElementById("amount")
+    .value);
 
     let purpose =
-    document.getElementById("purpose").value;
+    document.getElementById("purpose")
+    .value;
 
     if(name === "" ||
        isNaN(amount) ||
@@ -236,26 +314,34 @@ function addExpense(){
     let table =
     document.getElementById("expenseTable");
 
-    let row = table.insertRow();
+    let row =
+    table.insertRow();
 
     row.insertCell(0).innerHTML = name;
 
-    row.insertCell(1).innerHTML = "₹" + amount;
+    row.insertCell(1).innerHTML =
+    "₹" + amount;
 
-    row.insertCell(2).innerHTML = purpose;
+    row.insertCell(2).innerHTML =
+    purpose;
 
-    row.insertCell(3).innerHTML = "₹" + total;
+    row.insertCell(3).innerHTML =
+    "₹" + total;
 
     document.getElementById("totalAmount")
-    .innerHTML = "Grand Total: ₹" + total;
+    .innerHTML =
+    "Grand Total: ₹" + total;
 
     // CLEAR INPUTS
 
-    document.getElementById("personName").value = "";
+    document.getElementById("personName")
+    .value = "";
 
-    document.getElementById("amount").value = "";
+    document.getElementById("amount")
+    .value = "";
 
-    document.getElementById("purpose").value = "";
+    document.getElementById("purpose")
+    .value = "";
 }
 
 </script>
