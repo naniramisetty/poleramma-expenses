@@ -1,13 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Sri Poleramma Jathara</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
 
@@ -18,8 +20,6 @@ body{
     padding:0;
 }
 
-/* MAIN BOX */
-
 .login-box,.app{
     width:90%;
     max-width:700px;
@@ -29,8 +29,6 @@ body{
     border-radius:15px;
     box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
-
-/* LOGO */
 
 .logo-box{
     text-align:center;
@@ -52,8 +50,6 @@ body{
     font-size:38px;
 }
 
-/* INPUTS */
-
 input{
     width:100%;
     padding:12px;
@@ -63,8 +59,6 @@ input{
     font-size:16px;
     box-sizing:border-box;
 }
-
-/* BUTTONS */
 
 button{
     width:100%;
@@ -81,8 +75,6 @@ button{
 button:hover{
     background:#800000;
 }
-
-/* TABLE */
 
 table{
     width:100%;
@@ -101,8 +93,6 @@ table th{
     color:white;
 }
 
-/* TOTAL */
-
 .total{
     margin-top:20px;
     font-size:24px;
@@ -111,13 +101,9 @@ table th{
     font-weight:bold;
 }
 
-/* HIDDEN */
-
 .hidden{
     display:none;
 }
-
-/* BACK BUTTON */
 
 .back-btn{
     background:#444;
@@ -135,11 +121,13 @@ table th{
 
 <!-- LOGIN PAGE -->
 
-<div class="login-box" id="loginPage">
+<div class="login-box"
+id="loginPage">
 
 <div class="logo-box">
 
-<img src="poleramma.png" alt="Sri Poleramma">
+<img src="poleramma.png"
+alt="Sri Poleramma">
 
 <h1>Sri Poleramma Jathara</h1>
 
@@ -165,15 +153,17 @@ Login
 
 <div class="logo-box">
 
-<img src="poleramma.png" alt="Sri Poleramma">
+<img src="poleramma.png"
+alt="Sri Poleramma">
 
 <h1>Sri Poleramma Jathara</h1>
 
 </div>
 
-<!-- ADD EXPENSE AREA -->
+<!-- ADD EXPENSE SECTION -->
 
-<div id="expenseAdder" class="hidden">
+<div id="expenseAdder"
+class="hidden">
 
 <input type="text"
 id="personName"
@@ -198,7 +188,7 @@ Back / Logout
 
 </div>
 
-<!-- EXPENSE TABLE -->
+<!-- TABLE -->
 
 <table>
 
@@ -232,12 +222,32 @@ Grand Total: ₹0
 
 <script>
 
+// ===================================
+// SUPABASE CONNECTION
+// ===================================
+
+const SUPABASE_URL =
+"https://ixcyajgihzfeitsxvfvn.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_XGZffaraum2Dyd0FZxpRIA_OHyTuXQX";
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+// ===================================
 // TOTAL VARIABLE
+// ===================================
 
 let total = 0;
 
 
+// ===================================
 // LOGIN FUNCTION
+// ===================================
 
 function login(){
 
@@ -258,15 +268,18 @@ function login(){
         document.getElementById("expenseAdder")
         .classList.remove("hidden");
 
+        loadExpenses();
+
     }else{
 
         alert("Invalid Username or Password");
-
     }
 }
 
 
+// ===================================
 // LOGOUT FUNCTION
+// ===================================
 
 function logout(){
 
@@ -275,17 +288,14 @@ function logout(){
 
     document.getElementById("expenseAdder")
     .classList.add("hidden");
-
-    document.getElementById("username").value = "";
-
-    document.getElementById("password").value = "";
-
 }
 
 
+// ===================================
 // ADD EXPENSE FUNCTION
+// ===================================
 
-function addExpense(){
+async function addExpense(){
 
     let name =
     document.getElementById("personName")
@@ -309,39 +319,86 @@ function addExpense(){
         return;
     }
 
-    total += amount;
+    const { error } =
+    await supabaseClient
+    .from("expenses")
+    .insert([
+        {
+            name:name,
+            amount:amount,
+            purpose:purpose
+        }
+    ]);
 
-    let table =
-    document.getElementById("expenseTable");
+    if(error){
 
-    let row =
-    table.insertRow();
+        alert(error.message);
 
-    row.insertCell(0).innerHTML = name;
+    }else{
 
-    row.insertCell(1).innerHTML =
-    "₹" + amount;
+        document.getElementById("personName")
+        .value = "";
 
-    row.insertCell(2).innerHTML =
-    purpose;
+        document.getElementById("amount")
+        .value = "";
 
-    row.insertCell(3).innerHTML =
-    "₹" + total;
+        document.getElementById("purpose")
+        .value = "";
+
+        loadExpenses();
+    }
+}
+
+
+// ===================================
+// LOAD EXPENSES
+// ===================================
+
+async function loadExpenses(){
+
+    const { data, error } =
+    await supabaseClient
+    .from("expenses")
+    .select("*");
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    let table = "";
+
+    total = 0;
+
+    data.forEach((item)=>{
+
+        total += item.amount;
+
+        table += `
+
+        <tr>
+
+        <td>${item.name}</td>
+
+        <td>₹${item.amount}</td>
+
+        <td>${item.purpose}</td>
+
+        <td>₹${total}</td>
+
+        </tr>
+
+        `;
+    });
+
+    document.getElementById("expenseTable")
+    .innerHTML = table;
 
     document.getElementById("totalAmount")
     .innerHTML =
     "Grand Total: ₹" + total;
-
-    // CLEAR INPUTS
-
-    document.getElementById("personName")
-    .value = "";
-
-    document.getElementById("amount")
-    .value = "";
-
-    document.getElementById("purpose")
-    .value = "";
 }
 
 </script>
